@@ -1,15 +1,17 @@
 {
   "expo": {
-    "name": "pharma_log_frontend",
-    "slug": "pharma_log_frontend",
+    "name": "my-app",
+    "slug": "my-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
       "**/*"
@@ -20,17 +22,11 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.msb689867996.pharma_log_frontend"
+        "backgroundColor": "#FFFFFF"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "9143353c-9cf1-458e-8e50-965a33a783fc"
-      }
     }
   }
 }
