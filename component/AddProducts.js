@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
 import { goProductList, goUserList, goCommandList, reset } from '../redux/view';
 import { Button, TextInput, Snackbar } from 'react-native-paper';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function AddProducts() {
 
@@ -13,8 +15,7 @@ export default function AddProducts() {
     const [price, setPrice] = useState("");
     const [score, setScore] = useState("");
     const [message, setMessage] = useState("");
-    const [isVisible, setIsVisible] = useState(false);
-    const onDismissSnackBar = () => setIsVisible(false);
+    const [messageColor, setMessageColor] = useState("");
     const objectToUpdate = useSelector((state) => state.view.objectToUpdate)
 
     useEffect(() => {
@@ -32,56 +33,54 @@ export default function AddProducts() {
         dispatch(goProductList());
     };
 
-    const handleClick = () => {
-
+    const handleClick = async () => {
+        const userToken = await AsyncStorage.getItem('token');
+        const headers = {
+            'Authorization': `Bearer ${userToken}`
+        };
+        const productData = {
+            description: description,
+            price: price,
+            score: score
+        };
         if(update){
-
-            axios.put('http://localhost:5502/api/products/update', {
-                id: objectToUpdate._id, 
-                description: description,
-                price: price,
-                score: score
-            })
-            .then(response => {
-    
-                setMessage(response.data.message)
-                setIsVisible(true);
-                })
-                .catch(error => {
-                console.error('Erreur lors de la requête :', error);
-    
-            });
-
-        } else {
-            axios.post('http://localhost:5502/api/products/add', {
-                description: description,
-                price: price,
-                score: score
-            })
-            .then(response => {
-    
-                setMessage(response.data.message)
-                setIsVisible(true);
-    
-                if (response.data.success) {
-    
-                    setDescription("");
-                    setPrice("");
-                    setScore("");
-                    
+            try {
+                const response = await axios.put('http://localhost:5502/api/products/update', {
+                    id: objectToUpdate._id, 
+                    ...productData
+                }, { headers: headers })
+                setMessage(response.data.message);
+                setMessageColor("green");
+            } catch (error) {
+                if (error.response) {
+                    setMessage(error.response.data.message);
+                    setMessageColor("red");
+                } else {
+                    console.error('Erreur:', error.message);
                 }
-            })
-    
-                .catch(error => {
-                console.error('Erreur lors de la requête :', error);
-    
-            });
+            }
+        } 
+        if(add) {
+            try {
+                const response = await axios.post('http://localhost:5502/api/products/add', productData, { headers: headers })
+                setMessage(response.data.message);
+                setDescription("");
+                setPrice("");
+                setScore("");
+                setMessageColor("green");
+            } catch (error) {
+                if (error.response) {
+                    setMessage(error.response.data.message);
+                    setMessageColor("red");
+                } else {
+                    console.error('Erreur:', error.message);
+                }
+            }
         }
-
     };
 
     return(
-        <View>
+            <ScrollView>
                 {add && <Text>Ajouter un produit :</Text>}
                 {update && <Text>Modifier le produit :</Text>}
                 <Button onPress={() => comeBack()}><Text>Retour</Text></Button>
@@ -90,17 +89,7 @@ export default function AddProducts() {
                 <TextInput placeholder="Score" value={score} onChange={(e) => setScore(e.target.value)} />
                 {add && <Button onPress={() => handleClick()}><Text>Ajouter le produit</Text></Button>}
                 {update && <Button onPress={() => handleClick()}><Text>Modifier le produit</Text></Button>}
-                <Snackbar
-                    visible={isVisible}
-                    onDismiss={onDismissSnackBar}
-                    action={{
-                    label: 'Undo',
-                    onPress: () => {
-
-                    },
-                    }}>
-                    {message}
-                </Snackbar>
-        </View>
+                {message && <Text style={{ color: messageColor }}>{message}</Text>}
+            </ScrollView>
     )
 }

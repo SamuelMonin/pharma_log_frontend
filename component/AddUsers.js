@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
 import { goDeliveryMenList, goProductList, goUserList, goCommandList, reset } from '../redux/view';
 import { Button, TextInput, Snackbar } from 'react-native-paper';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function AddUsers() {
 
@@ -13,8 +15,7 @@ export default function AddUsers() {
     const [password, setPassword] = useState("");
     const [mail, setMail] = useState("");
     const [message, setMessage] = useState("");
-    const [isVisible, setIsVisible] = useState(false);
-    const onDismissSnackBar = () => setIsVisible(false);
+    const [messageColor, setMessageColor] = useState("");
     const objectToUpdate = useSelector((state) => state.view.objectToUpdate)
 
     useEffect(() => {
@@ -31,78 +32,63 @@ export default function AddUsers() {
         dispatch(goUserList());
     };
 
-    const handleClick = () => {
-
+    const handleClick = async () => {
+        const userToken = await AsyncStorage.getItem('token');
+        const headers = {
+            'Authorization': `Bearer ${userToken}`
+        };
+        const userData = {
+            login: login,
+            password: password,
+            mail: mail
+        };
         if(update){
-
-            axios.put('http://localhost:5502/api/users/update', {
-                id: objectToUpdate._id, 
-                login : login,
-                password: password,
-                mail: mail
-            })
-            .then(response => {
-                setPassword("")
-                setMessage(response.data.message)
-                setIsVisible(true);
-                })
-                .catch(error => {
-                console.error('Erreur lors de la requête :', error);
-    
-            });
-
-        } else {
-
-            console.log("Ici")
-
-            axios.post('http://localhost:5502/api/users/add', {
-                login : login,
-                password: password,
-                mail: mail
-            })
-            .then(response => {
-    
-                setMessage(response.data.message)
-                setIsVisible(true);
-    
-                if (response.data.success) {
-    
-                    setLogin("");
-                    setPassword("");
-                    setMail("");
-                    
+            try {
+                const response =  await axios.put('http://localhost:5502/api/users/update', {
+                    id: objectToUpdate._id,
+                    ...userData
+                    }, { headers: headers });
+                setMessage(response.data.message);
+                setMessageColor("green");
+            } catch (error) {
+                if (error.response) {
+                    setMessage(error.response.data.message);
+                    setMessageColor("red");
+                } else {
+                    console.error('Erreur:', error.message);
                 }
-            })
-    
-                .catch(error => {
-                console.error('Erreur lors de la requête :', error);
-    
-            });
+            }
+        } 
+        if(add){
+            try {
+                const response = await axios.post('http://localhost:5502/api/users/add', userData, { headers: headers });
+                setMessage(response.data.message);
+                setLogin("")
+                setPassword("")
+                setMail("")
+                setMessageColor("green");
+            } catch (error) {
+                if (error.response) {
+                    setMessage(error.response.data.message);
+                    setMessageColor("red");
+                } else {
+                    console.error('Erreur:', error.message);
+                }
+            }
         }
-
     };
 
-    return(
-        <View>
-                {add && <Text>Ajouter un utilisateur :</Text>}
-                {update && <Text>Modifier le utilisateur :</Text>}
-                <Button onPress={() => comeBack()}><Text>Retour</Text></Button>
-                <TextInput placeholder="Login" value={login} onChange={(e) => setLogin(e.target.value)} />
-                <TextInput placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                <TextInput placeholder="Mail" value={mail} onChange={(e) => setMail(e.target.value)} />
-                {add && <Button onPress={() => handleClick()}><Text>Ajouter le utilisateur</Text></Button>}
-                {update && <Button onPress={() => handleClick()}><Text>Modifier le utilisateur</Text></Button>}
-                <Snackbar
-                    visible={isVisible}
-                    onDismiss={onDismissSnackBar}
-                    action={{
-                    label: 'Undo',
-                    onPress: () => {
-
-                    },
-                    }}>
-                    {message}
-                </Snackbar>
-        </View>
+    return (
+        <ScrollView>
+            {add && <Text>Ajouter un utilisateur :</Text>}
+            {update && <Text>Modifier le utilisateur :</Text>}
+            <Button onPress={comeBack}><Text>Retour</Text></Button>
+            <TextInput placeholder="Login" value={login} onChangeText={(text) => setLogin(text)} />
+            <TextInput placeholder="Password" value={password} onChangeText={(text) => setPassword(text)} />
+            <TextInput placeholder="Mail" value={mail} onChangeText={(text) => setMail(text)} />
+            {add && <Button onPress={handleClick}><Text>Ajouter le utilisateur</Text></Button>}
+            {update && <Button onPress={handleClick}><Text>Modifier le utilisateur</Text></Button>}
+            {message && <Text style={{ color: messageColor }}>{message}</Text>}
+        </ScrollView>
     )
 }

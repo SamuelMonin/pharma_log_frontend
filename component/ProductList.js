@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import axios from 'axios';
 import { goAddProducts, goMenu, wantToAdd, wantToUpdate, setObjectToUpdate, reset } from '../redux/view';
 import { Card, Button } from 'react-native-paper';
@@ -51,7 +51,7 @@ export default function ProductList() {
     };
 
     return(
-        <View>
+            <ScrollView>
                 <Text>Liste des produits :</Text>
 
                 <Button onPress={() => comeBack()}><Text>Retour</Text></Button>
@@ -78,9 +78,6 @@ export default function ProductList() {
                         </Card>
                     </View>
                 ))}
-            
-
-        </View>
+            </ScrollView>
     )
-
 }

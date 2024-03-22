@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import axios from 'axios';
 import { goAddCommand, goMenu, reset } from '../redux/view';
 import { Card, Button } from 'react-native-paper';
@@ -45,7 +45,7 @@ export default function CommandList() {
     };
 
     return(
-        <View>
+        <ScrollView>
 
             <Text>Liste des commandes :</Text>
 
@@ -77,6 +77,6 @@ export default function CommandList() {
                     </Card>
                 </View>
             ))}
-        </View>
+        </ScrollView>
     )
 }

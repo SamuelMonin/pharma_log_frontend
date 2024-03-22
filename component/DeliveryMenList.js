@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import axios from 'axios';
 import { goAddDeliveryMen, goMenu, wantToAdd, wantToUpdate, setObjectToUpdate, reset } from '../redux/view';
 import { Card, Button } from 'react-native-paper';
@@ -51,7 +51,7 @@ export default function DeliveryMenList() {
     };
 
     return(
-        <View>
+        <ScrollView>
 
             <Button onPress={() => comeBack()}><Text>Retour</Text></Button>
             <Button onPress={() => addDeliveryMen()}><Text>Ajouter un livreur</Text></Button>
@@ -78,7 +78,7 @@ export default function DeliveryMenList() {
                         </Card.Actions>
                     </Card>
                 </View>
-            ))}
-        </View>
+            ))}   
+        </ScrollView>
     )
 }

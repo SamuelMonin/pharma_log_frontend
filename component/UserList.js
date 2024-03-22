@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import axios from 'axios';
 import { goMenu, reset, goAddUsers, wantToAdd, wantToUpdate, setObjectToUpdate } from '../redux/view';
 import { Card, Button } from 'react-native-paper';
@@ -51,33 +51,33 @@ export default function UserList() {
     };
 
     return(
-        <View>
-            <Text>Liste des utilisateurs :</Text>
+            <ScrollView>
+                <Text>Liste des utilisateurs :</Text>
 
-            <Button onPress={() => comeBack()}><Text>Retour</Text></Button>
-            <Button onPress={() => addUsers()}><Text>Ajouter un utilisateur</Text></Button>
+                <Button onPress={() => comeBack()}><Text>Retour</Text></Button>
+                <Button onPress={() => addUsers()}><Text>Ajouter un utilisateur</Text></Button>
 
-            {users.map((user) => (
-                <View key={user._id}>
-                    <Card>
-                        <Card.Content>
-                            <Text>
-                                login : {user.login}
-                            </Text>
-                            <Text>
-                                password : {user.password}
-                            </Text>
-                            <Text>
-                                mail : {user.mail}
-                            </Text>
-                        </Card.Content>
-                        <Card.Actions>
-                            <Button onPress={() => updateUsers(user)}>Modifier</Button>
-                            <Button onPress={() => deleteUser(user._id)} >Supprimer</Button>
-                        </Card.Actions>
-                    </Card>
-                </View>
-            ))}
-        </View>
+                {users.map((user) => (
+                    <View key={user._id}>
+                        <Card>
+                            <Card.Content>
+                                <Text>
+                                    login : {user.login}
+                                </Text>
+                                <Text>
+                                    password : {user.password}
+                                </Text>
+                                <Text>
+                                    mail : {user.mail}
+                                </Text>
+                            </Card.Content>
+                            <Card.Actions>
+                                <Button onPress={() => updateUsers(user)}>Modifier</Button>
+                                <Button onPress={() => deleteUser(user._id)} >Supprimer</Button>
+                            </Card.Actions>
+                        </Card>
+                    </View>
+                ))}
+            </ScrollView>
     )
 }

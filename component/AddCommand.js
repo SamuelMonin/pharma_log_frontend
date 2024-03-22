@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
 import { goDeliveryMenList, goProductList, goUserList, goCommandList, reset } from '../redux/view';
 import { Button } from 'react-native-paper';
@@ -15,10 +15,10 @@ export default function AddCommand() {
     };
 
     return(
-        <View>
-              <Text>Ajouter une commande</Text>
-              <Button onPress={() => comeBack()}><Text>Retour</Text></Button>
-        </View>
+        <ScrollView>
+            <Text>Ajouter une commande</Text>
+            <Button onPress={() => comeBack()}><Text>Retour</Text></Button>
+        </ScrollView>
     )
 
 }

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
 import { goDeliveryMenList, goProductList, goUserList, goCommandList, reset } from '../redux/view';
 import { Button, TextInput, Snackbar } from 'react-native-paper';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function AddDeliveryMen() {
 
@@ -12,9 +14,9 @@ export default function AddDeliveryMen() {
     const [name, setName] = useState("");
     const [lastname, setLastname] = useState("");
     const [message, setMessage] = useState("");
-    const [isVisible, setIsVisible] = useState(false);
-    const onDismissSnackBar = () => setIsVisible(false);
+    const [messageColor, setMessageColor] = useState("");
     const objectToUpdate = useSelector((state) => state.view.objectToUpdate)
+
 
     useEffect(() => {
         if (update) {
@@ -30,53 +32,51 @@ export default function AddDeliveryMen() {
         dispatch(goDeliveryMenList());
     };
 
-    const handleClick = () => {
-
+    const handleClick = async () => {
+        const userToken = await AsyncStorage.getItem('token');
+        const headers = {
+            'Authorization': `Bearer ${userToken}`
+        };
+        const deliveryManData = {
+            name : name,
+            lastname: lastname
+        };
         if(update){
-
-            axios.put('http://localhost:5502/api/deliveryMen/update', {
-                id: objectToUpdate._id, 
-                name : name,
-                lastname: lastname
-            })
-            .then(response => {
-    
-                setMessage(response.data.message)
-                setIsVisible(true);
-                })
-                .catch(error => {
-                console.error('Erreur lors de la requête :', error);
-    
-            });
-
-        } else {
-            axios.post('http://localhost:5502/api/deliveryMen/add', {
-                name : name,
-                lastname: lastname
-            })
-            .then(response => {
-    
-                setMessage(response.data.message)
-                setIsVisible(true);
-    
-                if (response.data.success) {
-    
-                    setName("");
-                    setLastname("");
-                    
+            try {
+                const response = await axios.put('http://localhost:5502/api/deliveryMen/update', {
+                    id: objectToUpdate._id,
+                    ...deliveryManData
+                }, { headers })
+                setMessage(response.data.message);
+                setMessageColor("green");
+            } catch (error) {
+                if (error.response) {
+                    setMessage(error.response.data.message);
+                    setMessageColor("red");
+                } else {
+                    console.error('Erreur:', error.message);
                 }
-            })
-    
-                .catch(error => {
-                console.error('Erreur lors de la requête :', error);
-    
-            });
+            }
+        } else {
+            try {
+                const response = await axios.post('http://localhost:5502/api/deliveryMen/add', deliveryManData, { headers })
+                setMessage(response.data.message);
+                setName("");
+                setLastname("");
+                setMessageColor("green");
+            } catch (error) {
+                if (error.response) {
+                    setMessage(error.response.data.message);
+                    setMessageColor("red");
+                } else {
+                    console.error('Erreur:', error.message);
+                }
+            }
         }
-
     };
 
     return(
-        <View>
+            <ScrollView>
                 {add && <Text>Ajouter un livreur :</Text>}
                 {update && <Text>Modifier le livreur :</Text>}
                 <Button onPress={() => comeBack()}><Text>Retour</Text></Button>
@@ -84,17 +84,7 @@ export default function AddDeliveryMen() {
                 <TextInput placeholder="Lastname" value={lastname} onChange={(e) => setLastname(e.target.value)} />
                 {add && <Button onPress={() => handleClick()}><Text>Ajouter le livreur</Text></Button>}
                 {update && <Button onPress={() => handleClick()}><Text>Modifier le livreur</Text></Button>}
-                <Snackbar
-                    visible={isVisible}
-                    onDismiss={onDismissSnackBar}
-                    action={{
-                    label: 'Undo',
-                    onPress: () => {
-
-                    },
-                    }}>
-                    {message}
-                </Snackbar>
-        </View>
+                {message && <Text style={{ color: messageColor }}>{message}</Text>}
+            </ScrollView>
     )
 }

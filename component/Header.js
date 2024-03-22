@@ -1,16 +1,15 @@
 import * as React from 'react';
-import { Appbar } from 'react-native-paper';
+import { Appbar, Button } from 'react-native-paper';
 
 export default function Header() {
 
+    // const isConnected = useSelector((state) => state.view.isConnected)
 
     return(
             <Appbar.Header>
-                {/* <Appbar.BackAction onPress={() => {}} /> */}
                 <Appbar.Content title="Pharma log" />
-                {/* <Appbar.Action icon="calendar" onPress={() => {}} />
-                <Appbar.Action icon="magnify" onPress={() => {}} /> */}
+                {true && <Button icon="logout">
+                        </Button>}
             </Appbar.Header>
     )
-
 }
