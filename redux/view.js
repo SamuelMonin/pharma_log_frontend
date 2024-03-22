@@ -13,7 +13,7 @@ const initialState = {
   showAddUsers: false,
   add: false,
   update: false,
-  objectToUpdate: {}
+  objectToUpdate: {},
 }
 
 export const viewSlice = createSlice({

@@ -4,12 +4,15 @@ import { ScrollView, Text, View } from 'react-native';
 import axios from 'axios';
 import { goAddProducts, goMenu, wantToAdd, wantToUpdate, setObjectToUpdate, reset } from '../redux/view';
 import { Card, Button } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ProductList() {
 
     const dispatch = useDispatch();
 
     const [products, setProducts] = useState([]);
+    const [message, setMessage] = useState("");
+    const [messageColor, setMessageColor] = useState("");
 
     useEffect(() => {
         fetchProducts();
@@ -42,11 +45,20 @@ export default function ProductList() {
     };
 
     const deleteProduct = async (id) => {
+        const userToken = await AsyncStorage.getItem('token');
+        const headers = {
+            'Authorization': `Bearer ${userToken}`
+        };
         try {
-            await axios.post('http://localhost:5502/api/products/delete', { id });
+            await axios.post('http://localhost:5502/api/products/delete', { id }, { headers });
             fetchProducts();
         } catch (error) {
-            console.error(error);
+            if (error.response) {
+                setMessage(error.response.data.message);
+                setMessageColor("red");
+            } else {
+                console.error('Erreur:', error.message);
+            }
         }
     };
 
@@ -78,6 +90,7 @@ export default function ProductList() {
                         </Card>
                     </View>
                 ))}
+                {message && <Text style={{ color: messageColor }}>{message}</Text>}
             </ScrollView>
     )
 }

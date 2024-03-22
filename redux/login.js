@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   admin: {},
-  token: ""
+  isLogoutVisible: false
 }
 
 export const loginSlice = createSlice({
@@ -12,12 +12,15 @@ export const loginSlice = createSlice({
     setAdmin: (state, action) => {
       state.admin = action.payload
     },
-    setToken: (state, action) => {
-      state.token = action.payload
+    showLogout: (state) => {
+      state.isLogoutVisible = true
+    },
+    hideLogout: (state) => {
+      state.isLogoutVisible = false
     },
   },
 })
 
-export const { setAdmin, setToken } = loginSlice.actions
+export const { setAdmin, showLogout, hideLogout } = loginSlice.actions
 
 export default loginSlice.reducer
