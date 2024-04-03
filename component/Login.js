@@ -16,7 +16,7 @@ export default function Login() {
 
     const log = async () => {
         try {
-            const response = await axios.post('http://localhost:5502/api/administrators/login', { login, password });
+            const response = await axios.post('https://pharma-log-backend.onrender.com/api/administrators/login', { login, password });
             dispatch(reset());
             dispatch(goMenu());
             dispatch(showLogout());

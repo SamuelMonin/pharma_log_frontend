@@ -45,7 +45,7 @@ export default function AddProducts() {
         };
         if(update){
             try {
-                const response = await axios.put('http://localhost:5502/api/products/update', {
+                const response = await axios.put('https://pharma-log-backend.onrender.com/api/products/update', {
                     id: objectToUpdate._id, 
                     ...productData
                 }, { headers: headers })
@@ -62,7 +62,7 @@ export default function AddProducts() {
         } 
         if(add) {
             try {
-                const response = await axios.post('http://localhost:5502/api/products/add', productData, { headers: headers })
+                const response = await axios.post('https://pharma-log-backend.onrender.com/api/products/add', productData, { headers: headers })
                 setMessage(response.data.message);
                 setDescription("");
                 setPrice("");
@@ -84,9 +84,9 @@ export default function AddProducts() {
                 {add && <Text>Ajouter un produit :</Text>}
                 {update && <Text>Modifier le produit :</Text>}
                 <Button onPress={() => comeBack()}><Text>Retour</Text></Button>
-                <TextInput placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
-                <TextInput placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
-                <TextInput placeholder="Score" value={score} onChange={(e) => setScore(e.target.value)} />
+                <TextInput placeholder="Description" value={description} onChangeText={(text) => setDescription(text)} />
+                <TextInput placeholder="Price" value={price} onChangeText={(text) => setPrice(text)} />
+                <TextInput placeholder="Score" value={score} onChangeText={(text) => setScore(text)} />
                 {add && <Button onPress={() => handleClick()}><Text>Ajouter le produit</Text></Button>}
                 {update && <Button onPress={() => handleClick()}><Text>Modifier le produit</Text></Button>}
                 {message && <Text style={{ color: messageColor }}>{message}</Text>}

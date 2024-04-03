@@ -19,7 +19,7 @@ export default function UserList() {
     }, []);
 
     const fetchUsers = () => {
-        axios.get('http://localhost:5502/api/users')
+        axios.get('https://pharma-log-backend.onrender.com/api/users')
         .then(response => {
             setUsers(response.data);
         })
@@ -50,7 +50,7 @@ export default function UserList() {
             'Authorization': `Bearer ${userToken}`
         };
         try {
-            await axios.post('http://localhost:5502/api/users/delete', { id }, { headers });
+            await axios.post('https://pharma-log-backend.onrender.com/api/users/delete', { id }, { headers });
             fetchUsers();
         } catch (error) {
             if (error.response) {

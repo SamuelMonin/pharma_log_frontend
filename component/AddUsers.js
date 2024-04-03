@@ -44,7 +44,7 @@ export default function AddUsers() {
         };
         if(update){
             try {
-                const response =  await axios.put('http://localhost:5502/api/users/update', {
+                const response =  await axios.put('https://pharma-log-backend.onrender.com/api/users/update', {
                     id: objectToUpdate._id,
                     ...userData
                     }, { headers: headers });
@@ -61,7 +61,7 @@ export default function AddUsers() {
         } 
         if(add){
             try {
-                const response = await axios.post('http://localhost:5502/api/users/add', userData, { headers: headers });
+                const response = await axios.post('https://pharma-log-backend.onrender.com/api/users/add', userData, { headers: headers });
                 setMessage(response.data.message);
                 setLogin("")
                 setPassword("")
@@ -81,13 +81,13 @@ export default function AddUsers() {
     return (
         <ScrollView>
             {add && <Text>Ajouter un utilisateur :</Text>}
-            {update && <Text>Modifier le utilisateur :</Text>}
+            {update && <Text>Modifier l'utilisateur :</Text>}
             <Button onPress={comeBack}><Text>Retour</Text></Button>
             <TextInput placeholder="Login" value={login} onChangeText={(text) => setLogin(text)} />
-            <TextInput placeholder="Password" value={password} onChangeText={(text) => setPassword(text)} />
+            <TextInput placeholder="Password" secureTextEntry value={password} onChangeText={(text) => setPassword(text)} />
             <TextInput placeholder="Mail" value={mail} onChangeText={(text) => setMail(text)} />
             {add && <Button onPress={handleClick}><Text>Ajouter le utilisateur</Text></Button>}
-            {update && <Button onPress={handleClick}><Text>Modifier le utilisateur</Text></Button>}
+            {update && <Button onPress={handleClick}><Text>Modifier l'utilisateur</Text></Button>}
             {message && <Text style={{ color: messageColor }}>{message}</Text>}
         </ScrollView>
     )

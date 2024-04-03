@@ -16,7 +16,7 @@ export default function CommandList() {
     }, []);
 
     const fetchCommands = () => {
-        axios.get('http://localhost:5502/api/commands')
+        axios.get('https://pharma-log-backend.onrender.com/api/commands')
         .then(response => {
             console.log(response.data);
             setCommands(response.data);
@@ -36,7 +36,7 @@ export default function CommandList() {
 
     const deleteCommand = async (id) => {
         try {
-            await axios.post('http://localhost:5502/api/commands/delete', { id });
+            await axios.post('https://pharma-log-backend.onrender.com/api/commands/delete', { id });
             console.log("Command deleted successfully");
             fetchCommands();
         } catch (error) {

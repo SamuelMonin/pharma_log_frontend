@@ -19,7 +19,7 @@ export default function DeliveryMenList() {
     }, []);
 
     const fetchDeliveryMen = () => {
-        axios.get('http://localhost:5502/api/deliveryMen')
+        axios.get('https://pharma-log-backend.onrender.com/api/deliveryMen')
         .then(response => {
             setDeliveryMen(response.data);
         })
@@ -50,7 +50,7 @@ export default function DeliveryMenList() {
             'Authorization': `Bearer ${userToken}`
         };
         try {
-            await axios.post('http://localhost:5502/api/deliveryMen/delete', { id }, { headers });
+            await axios.post('https://pharma-log-backend.onrender.com/api/deliveryMen/delete', { id }, { headers });
             fetchDeliveryMen();
         } catch (error) {
             if (error.response) {

@@ -19,7 +19,7 @@ export default function ProductList() {
     }, []);
 
     const fetchProducts = () => {
-        axios.get('http://localhost:5502/api/products')
+        axios.get('https://pharma-log-backend.onrender.com/api/products')
         .then(response => {
             setProducts(response.data);
         })
@@ -50,7 +50,7 @@ export default function ProductList() {
             'Authorization': `Bearer ${userToken}`
         };
         try {
-            await axios.post('http://localhost:5502/api/products/delete', { id }, { headers });
+            await axios.post('https://pharma-log-backend.onrender.com/api/products/delete', { id }, { headers });
             fetchProducts();
         } catch (error) {
             if (error.response) {

@@ -43,7 +43,7 @@ export default function AddDeliveryMen() {
         };
         if(update){
             try {
-                const response = await axios.put('http://localhost:5502/api/deliveryMen/update', {
+                const response = await axios.put('https://pharma-log-backend.onrender.com/api/deliveryMen/update', {
                     id: objectToUpdate._id,
                     ...deliveryManData
                 }, { headers })
@@ -57,9 +57,9 @@ export default function AddDeliveryMen() {
                     console.error('Erreur:', error.message);
                 }
             }
-        } else {
+        } if(add){
             try {
-                const response = await axios.post('http://localhost:5502/api/deliveryMen/add', deliveryManData, { headers })
+                const response = await axios.post('https://pharma-log-backend.onrender.com/api/deliveryMen/add', deliveryManData, { headers })
                 setMessage(response.data.message);
                 setName("");
                 setLastname("");
@@ -80,8 +80,8 @@ export default function AddDeliveryMen() {
                 {add && <Text>Ajouter un livreur :</Text>}
                 {update && <Text>Modifier le livreur :</Text>}
                 <Button onPress={() => comeBack()}><Text>Retour</Text></Button>
-                <TextInput placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-                <TextInput placeholder="Lastname" value={lastname} onChange={(e) => setLastname(e.target.value)} />
+                <TextInput placeholder="Name" value={name} onChangeText={(text) => setName(text)} />
+                <TextInput placeholder="Lastname" value={lastname} onChangeText={(text) => setLastname(text)} />
                 {add && <Button onPress={() => handleClick()}><Text>Ajouter le livreur</Text></Button>}
                 {update && <Button onPress={() => handleClick()}><Text>Modifier le livreur</Text></Button>}
                 {message && <Text style={{ color: messageColor }}>{message}</Text>}
